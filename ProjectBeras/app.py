@@ -5,6 +5,7 @@ import joblib
 import pandas as pd
 from PIL import Image
 from datetime import datetime
+import os
 
 st.set_page_config(
     page_title="Rice Quality - Ipsala",
@@ -18,12 +19,22 @@ if 'history' not in st.session_state:
 @st.cache_resource
 def load_resources():
     try:
-        model = joblib.load('model_beras_xgboost_final.pkl')
-        scaler = joblib.load('scaler_beras.pkl')
-        le = joblib.load('label_encoder_beras.pkl')
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        path_model = os.path.join(base_dir, 'model_beras_xgboost_final.pkl')
+        path_scaler = os.path.join(base_dir, 'scaler_beras.pkl')
+        path_le = os.path.join(base_dir, 'label_encoder_beras.pkl')
+        
+        model = joblib.load(path_model)
+        scaler = joblib.load(path_scaler)
+        le = joblib.load(path_le)
+        
         return model, scaler, le
+        
     except Exception as e:
-        st.error(f"⚠️ Error Asli: {e}")
+        st.error(f"🔥 Error Load File: {e}")
+        st.write(f"📂 Folder Script: {os.path.dirname(os.path.abspath(__file__))}")
+        st.write(f"📄 Daftar File di sini: {os.listdir(os.path.dirname(os.path.abspath(__file__)))}")
         return None, None, None
 
 model, scaler, le = load_resources()
