@@ -23,6 +23,7 @@ def load_resources():
         le = joblib.load('label_encoder_beras.pkl')
         return model, scaler, le
     except Exception as e:
+        st.error(f"⚠️ Error Asli: {e}")
         return None, None, None
 
 model, scaler, le = load_resources()
