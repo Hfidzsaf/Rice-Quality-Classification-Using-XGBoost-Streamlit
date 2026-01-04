@@ -28,13 +28,8 @@ def load_resources():
         model = joblib.load(path_model)
         scaler = joblib.load(path_scaler)
         le = joblib.load(path_le)
-        
         return model, scaler, le
-        
     except Exception as e:
-        st.error(f"🔥 Error Load File: {e}")
-        st.write(f"📂 Folder Script: {os.path.dirname(os.path.abspath(__file__))}")
-        st.write(f"📄 Daftar File di sini: {os.listdir(os.path.dirname(os.path.abspath(__file__)))}")
         return None, None, None
 
 model, scaler, le = load_resources()
@@ -42,7 +37,7 @@ model, scaler, le = load_resources()
 def extract_feature_from_contour(cnt, img_gray, img_rgb):
     area = cv2.contourArea(cnt)
     perimeter = cv2.arcLength(cnt, True)
-    x, y, w, h = cv2.boundingRect(cnt) 
+    x, y, w, h = cv2.boundingRect(cnt)
     
     aspect_ratio = float(w)/h if h != 0 else 0
     roundness = (4 * np.pi * area) / (perimeter**2) if perimeter != 0 else 0
@@ -195,10 +190,30 @@ if menu == "Aplikasi Utama":
 
     st.markdown("---")
     with st.expander("📈 Insight Model (Feature Importance)"):
-        try:
-            st.image("feature_importance.png", use_container_width=True)
-        except:
-            st.caption("Grafik feature_importance.png tidak ditemukan.")
+        col_a, col_b = st.columns([1, 1])
+        with col_a:
+            try:
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                img_path = os.path.join(base_dir, "feature_importance.png")
+                
+                fi_img = Image.open(img_path)
+                st.image(fi_img, use_container_width=True)
+            except:
+                st.caption("Grafik feature_importance.png tidak ditemukan.")
+        with col_b:
+            st.markdown("""
+            **Interpretasi Grafik:**
+            Grafik ini menunjukkan fitur mana yang paling berpengaruh dalam keputusan model XGBoost:
+            
+            1.  **Fitur Morfologi (Area/Perimeter/Aspect Ratio):**
+                * Sangat dominan untuk membedakan kelas **Whole** (Utuh) dan **Broken** (Patah).
+                * Jika nilai *Area* atau *Aspect Ratio* rendah, model cenderung memprediksi *Broken*.
+            
+            2.  **Fitur Warna (Mean RGB):**
+                * Dominan untuk membedakan kelas **Chalky** dan **Discolored**.
+                * Nilai RGB tinggi (terang) mengindikasikan **Chalky** (Putih Kapur).
+                * Nilai RGB rendah/kuning mengindikasikan **Discolored**.
+            """)
 
 elif menu == "Riwayat Analisis":
     st.title("📜 Log Riwayat Analisis")
