@@ -73,7 +73,7 @@ st.sidebar.info("© 2026 - Data Science")
 # Halaman Aplikasi Utama
 if menu == "Aplikasi Utama":
     st.title("🌾 Klasifikasi Mutu Beras (Ipsala)")
-    st.write("Upload citra beras (20-100 butir). Sistem otomatis mengkalibrasi ukuran (Auto-Scaling).")
+    st.write("Sistem otomatis mengkalibrasi ukuran (Auto-Scaling).")
 
     if model is None:
         st.error("⚠️ File Model (.pkl) tidak ditemukan. Pastikan file model, scaler, dan label encoder ada di folder yang sama.")
